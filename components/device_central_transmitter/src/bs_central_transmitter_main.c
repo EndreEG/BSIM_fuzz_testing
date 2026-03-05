@@ -107,6 +107,7 @@ static uint8_t clean_up() {
 }
 
 /**
+ * HELLO
  * Handler for SIGTERM and SIGINT
  * We do not need to do anything in this empty device
  * The signal will cause any blocking libPhyCom op to return an error
