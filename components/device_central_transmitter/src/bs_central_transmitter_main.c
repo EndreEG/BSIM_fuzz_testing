@@ -22,16 +22,18 @@
 #define FUZZ_POWER_OFFSET_MAX_DB  3   /* ±3 dB power */
 #define FUZZ_START_JITTER_US      100 /* ±100 us TX start jitter */
 
-/* BLE LL PDU header (1 byte): LLID(2) NESN(1) SN(1) MD(1) RFU(1) Length(5) - Core Spec 4.2 Vol 6 B.2.1 */
-#define BLE_LL_HEADER_SIZE 1
+/* BLE LL Data PDU header (2 bytes): Byte0: LLID(2) NESN(1) SN(1) MD(1) RFU(3); Byte1: Length(8) - Core Spec 4.2 Vol 6 B.2.1 */
+#define BLE_LL_HEADER_SIZE 2
 #define BLE_LL_MAX_PAYLOAD 27
 #define BLE_LL_PDU_MAX (BLE_LL_HEADER_SIZE + BLE_LL_MAX_PAYLOAD)
 #define BLE_LLID_DATA_CONTINUE 0u
 #define BLE_LLID_DATA_START 1u
 #define BLE_LLID_CTRL 2u
 #define BLE_LLID_RESERVED 3u
-#define BLE_LL_LENGTH_BITS 5u
+#define BLE_LL_LENGTH_BITS 8u
 #define BLE_LL_LENGTH_MASK ((1u << BLE_LL_LENGTH_BITS) - 1)
+#define BLE_LL_RFU_BITS 3u
+#define BLE_LL_RFU_MASK ((1u << BLE_LL_RFU_BITS) - 1)
 
 /* Simple state for state-machine fuzz: receiver is "idle" or "connected" */
 typedef enum { BLE_FUZZ_STATE_IDLE, BLE_FUZZ_STATE_CONNECTED } ble_fuzz_state_t;
@@ -41,6 +43,10 @@ typedef struct {
   uint32_t seed;
   bs_time_t tx_time;
   uint8_t llid;
+  uint8_t nesn;
+  uint8_t sn;
+  uint8_t md;
+  uint8_t rfu;
   uint8_t reported_len;
   uint16_t packet_len;
   ble_fuzz_state_t state;
@@ -52,14 +58,15 @@ typedef struct {
 static fuzz_case_t last_case;
 static int last_case_valid = 0;
 
-/* Creates a BLE LL PDU header, as a starting point for the fuzzing */
-static inline uint8_t ble_ll_header(uint8_t llid, uint8_t length)
+/* Writes 2-byte BLE LL header: buf[0]=LLID|NESN|SN|MD|RFU, buf[1]=Length */
+static inline void ble_ll_header_set(uint8_t *buf, uint8_t llid, uint8_t nesn, uint8_t sn, uint8_t md, uint8_t rfu, uint8_t length)
 {
-  return (uint8_t)((llid & 3u) | ((length & BLE_LL_LENGTH_MASK) << 3));
+  buf[0] = (uint8_t)((llid & 3u) | ((nesn & 1u) << 2) | ((sn & 1u) << 3) | ((md & 1u) << 4) | ((rfu & BLE_LL_RFU_MASK) << 5));
+  buf[1] = length & BLE_LL_LENGTH_MASK;
 }
 
-/* Get the length of the BLE LL PDU from the header, used when intentinonally violating the length */
-static inline uint8_t ble_ll_header_get_length(uint8_t h) { return (h >> 3) & BLE_LL_LENGTH_MASK; }
+/* Get the length of the BLE LL PDU from the header (byte 1), used when intentionally violating the length */
+static inline uint8_t ble_ll_header_get_length(const uint8_t *hdr) { return hdr[1] & BLE_LL_LENGTH_MASK; }
 
 typedef bs_basic_dev_args_t empty_args_t;
 
@@ -150,7 +157,7 @@ int main(int argc, char *argv[]) {
   bs_trace_raw(5, "Starting wait loop (target_time=%"PRItime"us, increment=%"PRItime"us)\n", 
                target_time, wait_increment);
 
-  /* BLE LL PDU buffer: 1 byte header + up to 27 bytes payload */
+  /* BLE LL PDU buffer: 2 byte header + up to 27 bytes payload */
   uint8_t packet[BLE_LL_PDU_MAX];
   uint16_t packet_len;
   p2G4_tx_t tx_s;
@@ -181,14 +188,15 @@ int main(int argc, char *argv[]) {
               "Receiver may have crashed. Last fuzz case (packet that may have caused it):\n"
               "Seed: %u\n"
               "TX time: %"PRItime" us\n"
-              "LLID: %u\n"
+              "LLID: %u NESN: %u SN: %u MD: %u RFU: %u\n"
               "Reported_len: %u\n"
               "PDU_len: %u\n"
               "State: %s\n"
               "Freq_offset: %.4f MHz\n"
               "Power: %.1f dB\n",
-              last_case.seed, last_case.tx_time, last_case.llid, last_case.reported_len,
-              last_case.packet_len, last_case.state == BLE_FUZZ_STATE_IDLE ? "IDLE" : "CONN",
+              last_case.seed, last_case.tx_time, last_case.llid, last_case.nesn, last_case.sn, last_case.md, last_case.rfu,
+              last_case.reported_len, last_case.packet_len,
+              last_case.state == BLE_FUZZ_STATE_IDLE ? "IDLE" : "CONN",
               last_case.freq_offset, last_case.power_db);
         }
         if (last_tx_packet_len > 0) {
@@ -205,32 +213,33 @@ int main(int argc, char *argv[]) {
     
     // Transmit a packet every 1 seconds
     if (time % next_tx_time == 0) {
-      /* --- Base BLE LL PDU: [header][payload] --- */
+      /* --- Base BLE LL PDU: [2-byte header][payload] --- */
       const uint8_t payload_len = 5;
-      packet[0] = ble_ll_header(BLE_LLID_DATA_CONTINUE, payload_len);
-      packet[1] = 0x01;
-      packet[2] = 0x02;
-      packet[3] = 0x03;
-      packet[4] = 0x04;
-      packet[5] = 0x05;
+      ble_ll_header_set(packet, BLE_LLID_DATA_CONTINUE, 0, 0, 0, 0, payload_len);
+      packet[2] = 0x01;
+      packet[3] = 0x02;
+      packet[4] = 0x03;
+      packet[5] = 0x04;
+      packet[6] = 0x05;
       packet_len = BLE_LL_HEADER_SIZE + payload_len;
 
-      /* --- 1) BLE protocol semantics: LLID (incl. reserved 3), RFU bit --- */
+      /* --- 1) BLE protocol semantics: LLID, NESN, SN, MD, RFU (full 2-byte header) --- */
       uint8_t llid = (uint8_t)bs_random_uniformRi(0, 4);
       if (llid > 3) llid = 3;
-      uint8_t hdr = packet[0];
-      hdr = (uint8_t)((hdr & 0xF8) | (llid & 3));
-      if (bs_random_uniform() < 0.2) hdr |= (1u << 5);
-      packet[0] = hdr;
+      uint8_t nesn = (uint8_t)(bs_random_uniform() < 0.5 ? 0 : 1);
+      uint8_t sn   = (uint8_t)(bs_random_uniform() < 0.5 ? 0 : 1);
+      uint8_t md   = (uint8_t)(bs_random_uniform() < 0.5 ? 0 : 1);
+      uint8_t rfu  = (uint8_t)bs_random_uniformRi(0, 8);  /* 3 bits: 0..7 */
+      packet[0] = (uint8_t)((llid & 3u) | ((nesn & 1u) << 2) | ((sn & 1u) << 3) | ((md & 1u) << 4) | ((rfu & BLE_LL_RFU_MASK) << 5));
 
-      /* --- 2) Malformed PDU: wrong length in header, bit flip in payload --- */
+      /* --- 2) Malformed PDU: wrong length in header (byte 1), bit flip in header or payload --- */
       uint8_t reported_len = payload_len;
       if (bs_random_uniform() < 0.25) {
         reported_len = (uint8_t)bs_random_uniformRi(0, BLE_LL_MAX_PAYLOAD);
-        packet[0] = (uint8_t)((packet[0] & 0x07) | (reported_len << 3));
+        packet[1] = reported_len;
       }
       if (bs_random_uniform() < 0.2) {
-        uint8_t idx = (uint8_t)bs_random_uniformRi(1, BLE_LL_HEADER_SIZE + payload_len - 1);
+        uint16_t idx = (uint16_t)bs_random_uniformRi(0, BLE_LL_HEADER_SIZE + payload_len - 1);
         packet[idx] ^= (1u << (uint8_t)bs_random_uniformRi(0, 7));
       }
 
@@ -273,19 +282,19 @@ int main(int argc, char *argv[]) {
 
 
 
-      /* Testing storing the last fuzzed parameters before crash */
+      /* Store last fuzzed parameters for crash reporting */
       last_case.seed = args.rseed;
       last_case.tx_time = tx_s.start_time;
       last_case.llid = llid;
+      last_case.nesn = nesn;
+      last_case.sn = sn;
+      last_case.md = md;
+      last_case.rfu = rfu;
       last_case.reported_len = reported_len;
       last_case.packet_len = packet_len;
       last_case.state = ble_state;
       last_case.freq_offset = freq_offset_MHz;
       last_case.power_db = power_dB;
-      //last_case.mutation_flags =
-      //    (bad_len ? 1<<0 : 0) |
-      //    (bitflip ? 1<<1 : 0) |
-      //    (rfu_bit ? 1<<2 : 0);
       last_case_valid = 1;
 
 
@@ -293,8 +302,8 @@ int main(int argc, char *argv[]) {
 
 
 
-      bs_trace_raw(2, "TX at %"PRItime"us BLE llid=%u len=%u pdu_len=%u %s freq=%.4f power=%.1f\n",
-                   tx_s.start_time, llid, reported_len, (unsigned)packet_len,
+      bs_trace_raw(2, "TX at %"PRItime"us BLE llid=%u NESN=%u SN=%u MD=%u RFU=%u len=%u pdu_len=%u %s freq=%.4f power=%.1f\n",
+                   tx_s.start_time, llid, nesn, sn, md, rfu, reported_len, (unsigned)packet_len,
                    ble_state == BLE_FUZZ_STATE_IDLE ? "IDLE" : "CONN", freq_offset_MHz, power_dB);
 
       if (p2G4_dev_req_tx_c_b(&tx_s, packet, &tx_done_s) == 0) {
@@ -311,14 +320,15 @@ int main(int argc, char *argv[]) {
               "Fuzz case that likely caused the crash (TX in progress when receiver died):\n"
               "Seed: %u\n"
               "TX time: %"PRItime" us\n"
-              "LLID: %u\n"
+              "LLID: %u NESN: %u SN: %u MD: %u RFU: %u\n"
               "reported_len: %u\n"
               "pdu_len: %u\n"
               "State: %s\n"
               "freq_offset: %.4f MHz\n"
               "power: %.1f dB\n",
-              last_case.seed, last_case.tx_time, last_case.llid, last_case.reported_len,
-              last_case.packet_len, last_case.state == BLE_FUZZ_STATE_IDLE ? "IDLE" : "CONN",
+              last_case.seed, last_case.tx_time, last_case.llid, last_case.nesn, last_case.sn, last_case.md, last_case.rfu,
+              last_case.reported_len, last_case.packet_len,
+              last_case.state == BLE_FUZZ_STATE_IDLE ? "IDLE" : "CONN",
               last_case.freq_offset, last_case.power_db);
         }
         if (last_tx_packet_len > 0) {
