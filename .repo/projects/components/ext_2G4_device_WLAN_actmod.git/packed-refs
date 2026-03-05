@@ -1,0 +1,5 @@
+# pack-refs with: peeled fully-peeled sorted 
+9cb6d8e72695f6b785e57443f0629a18069d6ce4 refs/remotes/bsim-gh/master
+56fd9494d537c0b4e4020bc709db4003ea767f71 refs/tags/v1.0
+1eeff52006cfd407ff0e7fc4a34d3989a47fed83 refs/tags/v1.1
+9cb6d8e72695f6b785e57443f0629a18069d6ce4 refs/tags/v1.2

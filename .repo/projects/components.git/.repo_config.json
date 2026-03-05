@@ -1,0 +1,23 @@
+{
+  "core.repositoryformatversion": [
+    "0"
+  ],
+  "core.filemode": [
+    "true"
+  ],
+  "filter.lfs.smudge": [
+    "git-lfs smudge --skip -- %f"
+  ],
+  "filter.lfs.process": [
+    "git-lfs filter-process --skip"
+  ],
+  "remote.bsim-gh.url": [
+    "https://github.com/BabbleSim/base.git"
+  ],
+  "remote.bsim-gh.projectname": [
+    "base.git"
+  ],
+  "remote.bsim-gh.fetch": [
+    "+refs/heads/*:refs/remotes/bsim-gh/*"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "components": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_device_burst_interferer": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_channel_multiatt": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_channel_NtNcable": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_device_playbackv2": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_device_playback": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_libPhyComv1": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_device_WLAN_actmod": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_channel_Indoorv1": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_modem_magic": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_modem_BLE_simple": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_2G4_phy_v1": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  },
+  "components/ext_libCryptov1": {
+    "last_fetch": 1762336893.7252367,
+    "last_checkout": 1762336893.7252367
+  }
+}

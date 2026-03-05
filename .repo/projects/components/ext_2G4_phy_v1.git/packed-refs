@@ -1,0 +1,21 @@
+# pack-refs with: peeled fully-peeled sorted 
+b0e49ae3dd4d6d0f2286fd1392cee1b5206f5bbc refs/remotes/bsim-gh/HB
+c26d487dcf20e8fd7d62e6bd5768b6aa8d9f193e refs/remotes/bsim-gh/coded_phy
+8964ed1eb94606c2ea555340907bdc5171793e65 refs/remotes/bsim-gh/master
+328455014063be454fe1c428639dc727224dd402 refs/tags/2019_03_29
+9e4293755781e60cf8142706373ebdbf055b148b refs/tags/2019_09_26
+eb78b0e31796b43f7f5fa33709a46ab779f6e12c refs/tags/v1.0
+a3ebde02ef03772a8c288b8f3b24fb08837a694c refs/tags/v1.1
+25bd0d8ea0764dd9440e355f6b61626f3018ee07 refs/tags/v1.2
+94f95ce4082a716a37ad3eb714c9abc0b84a6512 refs/tags/v1.3
+f19138c1aa68874e544b3e17bc8bfb1ed4aa6015 refs/tags/v1.4
+19f0e2d82e4de92b632edec52945a06268c8b345 refs/tags/v2.0
+cbfcab932976f6be837adfb05e129eddf6b92e10 refs/tags/v2.1
+cf2d86e736efac4f12fad5093ed2da2c5b406156 refs/tags/v2.2
+07cb3382379d350a10be0e28c873e911e5f25b65 refs/tags/v2.2.1
+d47c6dd90035b41b14f6921785ccb7b8484868e2 refs/tags/v2.3
+1ab9a884621d9ca719ef23536ca47d10494220c6 refs/tags/v2.4
+04eeb3c3794444122fbeeb3715f4233b0b50cfbb refs/tags/v2.4.1
+62e797b2c518e5bb6123a198382ed2b64b8c068e refs/tags/v2.5
+dbfd6b068f3bde8e56dcea58b4e686a8efc01cbe refs/tags/v2.6
+8964ed1eb94606c2ea555340907bdc5171793e65 refs/tags/v2.7

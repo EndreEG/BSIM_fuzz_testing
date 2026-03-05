@@ -1,0 +1,37 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/components/libUtilv1/src",
+                "${workspaceFolder}/components/libPhyComv1/src",
+                "${workspaceFolder}/components/libRandv2/src",
+                "${workspaceFolder}/components/ext_2G4_phy_v1/src",
+                "${workspaceFolder}/components/ext_2G4_libPhyComv1/src",
+                "${workspaceFolder}/components/ext_libCryptov1/src",
+                "${workspaceFolder}/components/common",
+                "${workspaceFolder}/components/device_empty/src",
+                "${workspaceFolder}/components/device_handbrake/src",
+                "${workspaceFolder}/components/device_minimal/src",
+                "${workspaceFolder}/components/device_pause_simu/src",
+                "${workspaceFolder}/components/device_time_monitor/src",
+                "${workspaceFolder}/components/device_counter/src"
+            ],
+            "defines": [
+                "_POSIX_C_SOURCE=200809"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c99",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": false
+            }
+        }
+    ],
+    "version": 4
+}

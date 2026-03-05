@@ -1,0 +1,4 @@
+d_00: ERROR: (src/bs_pc_base.c:509): Opening FIFO from phy to device failed
+d_00:  Signal "Terminated" received
+c/bs_pc_base.c:208): Found a previous, still RUNNING process w pid 12677 with the same sim_id and device port which would interfere with this one, aborting
+d_00: ERROR: (src/bs_pc_base.c:491): Failed to get lock

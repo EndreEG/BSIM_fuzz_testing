@@ -1,0 +1,1 @@
+start_time,scan_duration,scan_period,modulation,center_freq,antenna_gain,threshold_mod,threshold_rssi,stop_when_found,abort_time,recheck_time,end_time, RSSI_ave, RSSI_max, mod_rx_power,mod_found, rssi_overthreshold

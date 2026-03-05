@@ -1,0 +1,6 @@
+p_???: ERROR: (src/p2G4_args.c:193): Incorrect phy main option -record_output
+bs_2G4_phy_v1 [-h] [--h] [--help] [-?] [-s=<s_id>] [-p_id=<phy_id>] -D=<number_devices> [-sim_length=<sim_length>] 
+[-v=<trace_level>] [-verbose=<trace_level>] [-rs=<rand_seed>] [-random_seed=<rand_seed>] [-color] [-no-color] 
+[-force-color] [-nodump] [-dump_imm] [-dump] [-crcerr_data] [-c] [-stop_on_diff] [-channel=<channel>] 
+[-defmodem=<modem>] [-modem<nbr>=<modem>] [-argschannel <arg>...] [-argsdefmodem <arg>...] [-argsmodem<nbr> <arg>...] 
+[-argsmain <arg>...] 

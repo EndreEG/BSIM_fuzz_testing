@@ -1,0 +1,46 @@
+[core]
+	repositoryFormatVersion = 1
+	filemode = true
+[filter "lfs"]
+	smudge = git-lfs smudge --skip -- %f
+	process = git-lfs filter-process --skip
+[remote "origin"]
+	url = https://github.com/BabbleSim/manifest.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[manifest]
+	platform = auto
+[extensions]
+	preciousObjects = true
+[branch "default"]
+	remote = origin
+	merge = refs/heads/master
+[repo]
+	existingprojectcount = 0
+	newprojectcount = 13
+[repo "syncstate.main"]
+	synctime = 2025-11-05T10:01:37.037676+00:00
+	version = 1
+[repo "syncstate.sys"]
+	argv = ['/home/engr/bsim/.repo/repo/main.py', '--repo-dir=/home/engr/bsim/.repo', '--wrapper-version=2.36', '--wrapper-path=/usr/bin/repo', '--', 'sync']
+[repo "syncstate.options"]
+	jobs = 8
+	outermanifest = true
+	jobsnetwork = 8
+	jobscheckout = 8
+	mpupdate = true
+	interleaved = true
+	clonebundle = true
+	retryfetches = 0
+	prune = true
+	repoverify = true
+	quiet = false
+	verbose = false
+[repo "syncstate.remote.origin"]
+	url = https://github.com/BabbleSim/manifest.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[repo "syncstate.branch.default"]
+	remote = origin
+	merge = refs/heads/master
+[repo "syncstate.repo"]
+	existingprojectcount = 0
+	newprojectcount = 13

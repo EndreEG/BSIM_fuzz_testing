@@ -1,0 +1,11 @@
+# pack-refs with: peeled fully-peeled sorted 
+3712283f0bd3a982f620908579c99af35e969554 refs/remotes/bsim-gh/HB
+4d2379de510684cd4b1c3bbbb09bce7b5a20bc1f refs/remotes/bsim-gh/master
+d4f2a76a8a15c8f746bd2fdb23e41aa7ff263129 refs/tags/v1.0
+b5b1ca98e71d9262892cefb360f0541d6186c9c6 refs/tags/v1.1
+ae6687212a4b062b356042f163759eb17732434b refs/tags/v2.0
+84f1d43e0b1798ad504cdbe4b311634c0c6f29ff refs/tags/v2.1
+ce975a3259fd0dd761d371b60435242d54794bad refs/tags/v2.2
+809ab073159c9ab6686c2fea5749b0702e0909f7 refs/tags/v2.3
+a38d2d24b04a6f970a225d1316047256ebf5a539 refs/tags/v2.4
+4d2379de510684cd4b1c3bbbb09bce7b5a20bc1f refs/tags/v2.4.1
